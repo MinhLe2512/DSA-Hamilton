@@ -3,64 +3,59 @@
 #include <fstream>
 #include <string>
 #include <sstream>
-using namespace std;
 
-void readInput(string input_file, int& n, vector<vector<int>>& m) {
-	ifstream fin(input_file);
-	//read the numbers of cities
-	fin >> n;
+class hamiltonian
+{
+public:
+	hamiltonian(const std::vector<std::vector<int>> &);
+	bool hasCycle();
+	bool hasPath();
 
-	//create NxN matrix
-	for (int i = 0; i < n; i++) {
-		vector<int> row;
+private:
+	const std::vector<std::vector<int>> matrix;
+	std::vector<int> path;
+};
 
-		for (int j = 0; j < n; j++) row.push_back(0);
-		m.push_back(row);
-	}
+bool readFile(const char *dir, std::vector<std::vector<int>> &matrix)
+{
+	std::ifstream fin(dir);
+	if (fin.is_open())
+		return false;
+	size_t size;
+	fin >> size;
+	matrix.resize(size, std::vector<int>(size, 0));
 
-	//read paths
-	int a, b, c;
-	while (!fin.eof()) {
-		fin >> a;
-		if (a == -1) break;
-		else {
-			fin >> b;
-			fin >> c;
-			m[a - 1][b - 1] = c;
-			m[b - 1][a - 1] = c;
-		}
+	std::string buffer;
+	while (std::getline(fin, buffer) && buffer.find("-1") != std::string::npos)
+	{
+		std::stringstream ss(buffer);
+		//vertex1, vertex2, weight
+		int input[3];
+		for (int i = 0; ss >> input[i] && i < 3; i++)
+			;
+		//the file vertex count from 1
+		matrix[input[0] - 1][input[1] - 1] = input[2];
+		matrix[input[1] - 1][input[0] - 1] = input[2];
 	}
 
 	fin.close();
+	return true;
 }
 
-void matrixToList(vector<vector<int>> m, vector<vector<int>>& l) {//Convert from matrix to list
-	for (vector<vector<int>>::iterator i = m.begin(); i != m.end(); i++) {
-		vector<int> row;
-		bool check = false;
-
-		//push adjacency elements
-		for (vector<int>::iterator j = (*i).begin(); j != (*i).end(); j++)
-			if ((*j) != 0) {
-				row.push_back(j - (*i).begin());
-				check = true;
-			}
-		//check isolated vertices
-		if (check == false) row.push_back(0);
-		l.push_back(row);
-	}
-}
-void printMatrix(vector<vector<int>> m) {//Print matrix to test
-	for (vector<vector<int>>::iterator i = m.begin(); i != m.end(); i++) {
-		for (vector<int>::iterator j = (*i).begin(); j != (*i).end(); j++) cout << (*j) << " ";
-		cout << endl;
-	}
-}
-
-int main()
+int main(int argc, const char *argv[])
 {
-	int n;
-	vector<vector<int>> m, l;
-	readInput("input.txt", n, m);
-	printMatrix(m);
+	if (argc != 3)
+	{
+		std::cout << "Invalid argument.";
+		return 1;
+	}
+
+	std::vector<std::vector<int>> gMatrix;
+	if(!readFile(argv[2], gMatrix))
+	{
+		std::cout << "Read file failed.";
+		return 1;
+	}
+
+	hamiltonian check(gMatrix);
 }
