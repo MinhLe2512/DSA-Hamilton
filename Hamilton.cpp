@@ -8,7 +8,8 @@
 class hamiltonian
 {
 public:
-	hamiltonian(const std::vector<std::vector<int>> &);
+	hamiltonian(const std::vector<std::vector<int>> &matrix);
+	//void loadGraph(const std::vector<std::vector<int>> &matrix);
 	bool hasCycle();
 	bool hasPath();
 
@@ -34,6 +35,11 @@ hamiltonian::hamiltonian(const std::vector<std::vector<int>> &matrix)
 	visited[0] = true;
 }
 
+// void hamiltonian::loadGraph(const std::vector<std::vector<int>> &matrix)
+// {
+// 	*this = hamiltonian(matrix);
+// }
+
 bool hamiltonian::hasCycle()
 {
 	bool result = recursion(1) == result_t::CYCLE;
@@ -58,7 +64,7 @@ hamiltonian::result_t hamiltonian::recursion(size_t pos)
 				   ? result_t::CYCLE
 				   : result_t::PATH;
 	}
-
+	//search for vertex that haven't in path[]
 	for (int vertex = 1; vertex < (int)matrix.size(); vertex++)
 	{
 		if (isSafe(vertex, pos))
@@ -78,7 +84,7 @@ hamiltonian::result_t hamiltonian::recursion(size_t pos)
 
 bool hamiltonian::isSafe(int vertex, size_t pos)
 {
-	//return matrix[path[pos - 1]][vertex] != 0 || !visited[vertex] == false;
+	//if current vertex is adjacented to the previous vertex in path[]
 	if (matrix[path[pos - 1]][vertex] == 0)
 		return false;
 	return !visited[vertex];
