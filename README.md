@@ -30,9 +30,9 @@ follow:
 - 1<sup>st</sup> line: positive integer `n` represents n cities. Cities are numbered from 1 → `n`.
 - Following lines: `City A` `City B` `Distance`.
 
-Example:
-```
+Example:  
 Input
+```
 4
 1 2 3
 1 3 4
@@ -40,9 +40,10 @@ Input
 ```
 Output
 - -HPath: No
-- -HCycle: No
-```
+- -HCycle: No    
+
 Input
+```
 5
 1 2 4
 1 4 8
