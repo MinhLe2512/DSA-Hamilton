@@ -1,8 +1,9 @@
 #include <iostream>
-#include <vector>
 #include <fstream>
-#include <string>
 #include <sstream>
+#include <vector>
+#include <string>
+#include <string.h>
 
 class hamiltonian
 {
@@ -12,9 +13,76 @@ public:
 	bool hasPath();
 
 private:
-	const std::vector<std::vector<int>> matrix;
+	enum result_t
+	{
+		FALSE = 0,
+		PATH = 1,
+		CYCLE = 2,
+	};
+	result_t recursion(size_t pos);
+	bool isSafe(int vertex, size_t pos);
+
+	const std::vector<std::vector<int>> &matrix;
+	std::vector<bool> visited;
 	std::vector<int> path;
 };
+
+hamiltonian::hamiltonian(const std::vector<std::vector<int>> &matrix)
+	: matrix(matrix), visited(matrix.size(), false), path(matrix.size(), -1)
+{
+	path[0] = 0;
+	visited[0] = true;
+}
+
+bool hamiltonian::hasCycle()
+{
+	bool result = recursion(1) == result_t::CYCLE;
+	//reset
+	visited = std::vector<bool>(matrix.size(), false);
+	return result;
+}
+
+bool hamiltonian::hasPath()
+{
+	bool result = recursion(1) != result_t::FALSE;
+	//reset
+	visited = std::vector<bool>(matrix.size(), false);
+	return result;
+}
+
+hamiltonian::result_t hamiltonian::recursion(size_t pos)
+{
+	if (pos == matrix.size())
+	{
+		return (matrix[path[pos - 1]][path[0]] != 0)
+				   ? result_t::CYCLE
+				   : result_t::PATH;
+	}
+
+	for (int vertex = 1; vertex < (int)matrix.size(); vertex++)
+	{
+		if (isSafe(vertex, pos))
+		{
+			visited[vertex] = true;
+			path[pos] = vertex;
+			result_t type = recursion(pos + 1);
+			if (type != result_t::FALSE)
+				return type;
+			//backtrack
+			visited[vertex] = false;
+			path[pos] = -1;
+		}
+	}
+	return result_t::FALSE;
+}
+
+bool hamiltonian::isSafe(int vertex, size_t pos)
+{
+	//return matrix[path[pos - 1]][vertex] != 0 || !visited[vertex] == false;
+	if (matrix[path[pos - 1]][vertex] == 0)
+		return false;
+	return !visited[vertex];
+}
 
 bool readFile(const char *dir, std::vector<std::vector<int>> &matrix)
 {
@@ -42,20 +110,72 @@ bool readFile(const char *dir, std::vector<std::vector<int>> &matrix)
 	return true;
 }
 
+//DEBUG
+bool readMatrix(std::ifstream &fin, std::vector<std::vector<int>> &matrix)
+{
+	size_t size;
+	if (!(fin >> size))
+		return false;
+
+	matrix.resize(size);
+	int buffer;
+	for (size_t i = 0; i < size; i++)
+	{
+		matrix[i].resize(size);
+		for (size_t j = 0; j < size && fin >> buffer; j++)
+		{
+			matrix[i][j] = buffer;
+		}
+	}
+	return true;
+}
+
 int main(int argc, const char *argv[])
 {
-	if (argc != 3)
-	{
-		std::cout << "Invalid argument.";
-		return 1;
-	}
+	// if (argc != 3)
+	// {
+	// 	std::cout << "Invalid argument.";
+	// 	return 1;
+	// }
 
-	std::vector<std::vector<int>> gMatrix;
-	if(!readFile(argv[2], gMatrix))
+	// std::vector<std::vector<int>> gMatrix;
+	// if (!readFile(argv[2], gMatrix))
+	// {
+	// 	std::cout << "Read file failed.";
+	// 	return 1;
+	// }
+
+	// hamiltonian check(gMatrix);
+	// if (strcmp(argv[1], "-HPath") == 0)
+	// {
+	// 	std::cout << (check.hasPath() ? "Yes" : "No");
+	// }
+	// else if (strcmp(argv[1], "-HCycle") == 0)
+	// {
+	// 	std::cout << (check.hasCycle() ? "Yes" : "No");
+	// }
+	// else
+	// {
+	// 	std::cout << "Invalid argument.";
+	// 	return 1;
+	// }
+
+	//DEBUG
+	const char *dir = "H:\\GitHub\\2.1-DSA-Hamilton\\test.txt";
+	std::ifstream fin(dir);
+	if (!fin.is_open())
 	{
 		std::cout << "Read file failed.";
 		return 1;
 	}
-
-	hamiltonian check(gMatrix);
+	std::vector<std::vector<int>> matrix;
+	while (readMatrix(fin, matrix))
+	{
+		hamiltonian ham(matrix);
+		std::cout << "Path: " << (ham.hasPath() ? "Yes" : "No");
+		std::cout << std::endl;
+		std::cout << "Cycle: " << (ham.hasCycle() ? "Yes" : "No");
+		std::cout << std::endl;
+	}
+	fin.close();
 }
