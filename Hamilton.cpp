@@ -111,11 +111,13 @@ bool readFile(const char *dir, std::vector<std::vector<int>> &matrix)
 }
 
 //DEBUG
+#include <limits>
 bool readMatrix(std::ifstream &fin, std::vector<std::vector<int>> &matrix)
 {
 	size_t size;
 	if (!(fin >> size))
 		return false;
+	fin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); //ignore description
 
 	matrix.resize(size);
 	int buffer;
@@ -175,7 +177,8 @@ int main(int argc, const char *argv[])
 		std::cout << "Path: " << (ham.hasPath() ? "Yes" : "No");
 		std::cout << std::endl;
 		std::cout << "Cycle: " << (ham.hasCycle() ? "Yes" : "No");
-		std::cout << std::endl;
+		std::cout << std::endl
+				  << std::endl;
 	}
 	fin.close();
 }
