@@ -18,7 +18,7 @@ In this Challenge, let’s do some research about 2 of the most famous problems 
 A.exe Action InputPath
 ```
 
-∗ `A.exe`: Your executional ".exe" file.
+∗ `A.exe`: Your executional ".exe" file.  
 ∗ `Action`:
 - `-HPath`: verify if the given graph exists a Hamiltonian Path.
 → Output: "Yes" or "No" to the Console.
