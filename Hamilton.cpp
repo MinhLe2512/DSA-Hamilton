@@ -50,7 +50,7 @@ bool hamiltonian::hasCycle()
 
 bool hamiltonian::hasPath()
 {
-	bool result = recursion(1) != result_t::FALSE;
+	bool result = recursion(1) == result_t::FALSE;
 	//reset
 	visited = std::vector<bool>(matrix.size(), false);
 	return result;
@@ -140,36 +140,36 @@ bool readMatrix(std::ifstream &fin, std::vector<std::vector<int>> &matrix)
 
 int main(int argc, const char *argv[])
 {
-	// if (argc != 3)
-	// {
-	// 	std::cout << "Invalid argument.";
-	// 	return 1;
-	// }
+	 /*if (argc != 3)
+	 {
+	 	std::cout << "Invalid argument.";
+	 	return 1;
+	 }
 
-	// std::vector<std::vector<int>> gMatrix;
-	// if (!readFile(argv[2], gMatrix))
-	// {
-	// 	std::cout << "Read file failed.";
-	// 	return 1;
-	// }
+	 std::vector<std::vector<int>> gMatrix;
+	 if (!readFile(argv[2], gMatrix))
+	 {
+	 	std::cout << "Read file failed.";
+	 	return 1;
+	 }
 
-	// hamiltonian check(gMatrix);
-	// if (strcmp(argv[1], "-HPath") == 0)
-	// {
-	// 	std::cout << (check.hasPath() ? "Yes" : "No");
-	// }
-	// else if (strcmp(argv[1], "-HCycle") == 0)
-	// {
-	// 	std::cout << (check.hasCycle() ? "Yes" : "No");
-	// }
-	// else
-	// {
-	// 	std::cout << "Invalid argument.";
-	// 	return 1;
-	// }
+	 hamiltonian check(gMatrix);
+	 if (strcmp(argv[1], "-HPath") == 0)
+	 {
+	 	std::cout << (check.hasPath() ? "Yes" : "No");
+	 }
+	 else if (strcmp(argv[1], "-HCycle") == 0)
+	 {
+	 	std::cout << (check.hasCycle() ? "Yes" : "No");
+	 }
+	 else
+	 {
+	 	std::cout << "Invalid argument.";
+	 	return 1;
+	}*/
 
 	//DEBUG
-	const char *dir = "H:\\GitHub\\2.1-DSA-Hamilton\\test.txt";
+	const char *dir = "C:\\Users\\DELL\\source\\repos\\Project8\\Project8\\test.txt";
 	std::ifstream fin(dir);
 	if (!fin.is_open())
 	{
